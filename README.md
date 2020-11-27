@@ -19,15 +19,14 @@ module "kong" {
     "KONG_ADMIN_ACCESS_LOG" = "/dev/stdout"
     "KONG_PROXY_ERROR_LOG" = "/dev/stderr" 
     "KONG_ADMIN_ERROR_LOG" = "/dev/stderr" 
-    "KONG_DATABASE" = "off"
   }
 }
 ```
 
-Accessing the `traefik` entrypoint can then be done by SSH forward:
+Accessing the `kong` API endpoint can then be done by SSH forward:
 
 ```
-cf ssh -L8080:localhost:8080 traefik
+cf ssh -L8001:localhost:8001 kong
 ```
 
 # Contact / Getting help
