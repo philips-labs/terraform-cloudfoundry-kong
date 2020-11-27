@@ -53,7 +53,7 @@ resource "cloudfoundry_app" "konga" {
   memory       = var.memory
   disk_quota   = var.disk
   docker_image = var.konga_image
-  environment = merge(var.environment,
+  environment = merge(var.konga_environment,
     {
       "NO_AUTH"  = "true"
       "NODE_ENV" = "development"

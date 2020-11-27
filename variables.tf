@@ -35,6 +35,13 @@ variable "environment" {
   default     = {}
 }
 
+variable "konga_environment" {
+  type        = map
+  description = "Environment variables for Kong app"
+  default     = {}
+}
+
+
 variable "network_policies" {
   description = "The container-to-container network policies to create with Kong as the source app"
   type = list(object({
