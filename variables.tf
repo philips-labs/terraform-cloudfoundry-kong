@@ -1,7 +1,7 @@
 variable "kong_image" {
   type        = string
   description = "Kong Docker image to use"
-  default     = "loafoe/kong"
+  default     = "kong"
 }
 
 variable "konga_image" {
@@ -26,6 +26,7 @@ variable "cf_domain" {
 variable "name_postfix" {
   type        = string
   description = "The postfix string to append to the hostname, prevents namespace clashes"
+  default     = ""
 }
 
 variable "environment" {

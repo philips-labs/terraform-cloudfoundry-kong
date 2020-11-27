@@ -11,16 +11,21 @@ data "cloudfoundry_domain" "domain" {
   name = var.cf_domain
 }
 
+data "cloudfoundry_domain" "internal_domain" {
+  name = "apps.internal"
+}
+
 data "cloudfoundry_service" "rds" {
   name = var.db_broker
 }
 
 resource "cloudfoundry_app" "kong" {
-  name         = "kong"
-  space        = data.cloudfoundry_space.space.id
-  memory       = var.memory
-  disk_quota   = var.disk
-  docker_image = var.kong_image
+  name              = "kong"
+  space             = data.cloudfoundry_space.space.id
+  memory            = var.memory
+  disk_quota        = var.disk
+  docker_image      = var.kong_image
+  health_check_type = "process"
   environment = merge(var.environment,
     {
       "KONG_DATABASE"     = "postgres"
@@ -29,11 +34,15 @@ resource "cloudfoundry_app" "kong" {
       "KONG_PG_HOST"      = cloudfoundry_service_key.database_key[0].credentials.hostname
       "KONG_PG_DATABASE"  = cloudfoundry_service_key.database_key[0].credentials.db_name
       "KONG_PLUGINS"      = "bundled"
-      "KONG_PROXY_LISTEN" = "0.0.0.0:8080 reuseport backlog=16384"
+      "KONG_PROXY_LISTEN" = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
+      "KONG_ADMIN_LISTEN" = "0.0.0.0:8001"
     }
   )
   routes {
     route = cloudfoundry_route.kong.id
+  }
+  routes {
+    route = cloudfoundry_route.kong_internal.id
   }
 }
 
@@ -43,21 +52,16 @@ resource "cloudfoundry_app" "konga" {
   space        = data.cloudfoundry_space.space.id
   memory       = var.memory
   disk_quota   = var.disk
-  docker_image = var.kong_image
+  docker_image = var.konga_image
   environment = merge(var.environment,
     {
-      "DB_ADAPTER"   = "postgres"
-      "DB_USER"      = cloudfoundry_service_key.database_key[0].credentials.username
-      "DB_PASSWORD"  = cloudfoundry_service_key.database_key[0].credentials.password
-      "DB_HOST"      = cloudfoundry_service_key.database_key[0].credentials.hostname
-      "DB_DATABASE"  = cloudfoundry_service_key.database_key[0].credentials.db_name
-      "DB_PG_SCHEMA" = "konga"
-      "NODE_ENV"     = "development"
+      "NO_AUTH"  = "true"
+      "NODE_ENV" = "development"
     }
   )
 
   routes {
-    route = cloudfoundry_route.kong.id
+    route = cloudfoundry_route.konga_internal.id
   }
 }
 
@@ -81,6 +85,27 @@ resource "cloudfoundry_route" "kong" {
   domain   = data.cloudfoundry_domain.domain.id
   space    = data.cloudfoundry_space.space.id
   hostname = var.name_postfix == "" ? "kong" : "kong-${var.name_postfix}"
+}
+
+resource "cloudfoundry_route" "kong_internal" {
+  domain   = data.cloudfoundry_domain.internal_domain.id
+  space    = data.cloudfoundry_space.space.id
+  hostname = var.name_postfix == "" ? "kong" : "kong-${var.name_postfix}"
+}
+
+resource "cloudfoundry_route" "konga_internal" {
+  domain   = data.cloudfoundry_domain.internal_domain.id
+  space    = data.cloudfoundry_space.space.id
+  hostname = var.name_postfix == "" ? "konga" : "konga-${var.name_postfix}"
+}
+
+resource "cloudfoundry_network_policy" "konga_internal" {
+  policy {
+    source_app = cloudfoundry_app.konga[0].id
+    destination_app = cloudfoundry_app.kong.id
+    protocol = "tcp"
+    port = "8001"
+  }
 }
 
 resource "cloudfoundry_network_policy" "kong" {
