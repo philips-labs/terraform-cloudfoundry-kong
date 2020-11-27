@@ -34,6 +34,9 @@ resource "cloudfoundry_app" "kong" {
       "KONG_PG_HOST"      = cloudfoundry_service_key.database_key[0].credentials.hostname
       "KONG_PG_DATABASE"  = cloudfoundry_service_key.database_key[0].credentials.db_name
       "KONG_PLUGINS"      = "bundled"
+      "KONG_TRUSTED_IPS"  = "0.0.0.0/0"
+      "KONG_REAL_IP_HEADER" = "X-Forwarded-For"
+      "KONG_REAL_IP_RECURSIVE" = "on"
       "KONG_PROXY_LISTEN" = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
       "KONG_ADMIN_LISTEN" = "0.0.0.0:8001"
     }
