@@ -26,6 +26,7 @@ resource "cloudfoundry_app" "kong" {
   disk_quota        = var.disk
   docker_image      = var.kong_image
   health_check_type = "process"
+  command = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh kong docker-start"
   environment = merge(var.environment,
     {
       "KONG_DATABASE"     = "postgres"
@@ -64,7 +65,7 @@ resource "cloudfoundry_app" "konga" {
   )
 
   routes {
-    route = cloudfoundry_route.konga_internal.id
+    route = cloudfoundry_route.konga_internal[0].id
   }
 }
 
@@ -97,12 +98,15 @@ resource "cloudfoundry_route" "kong_internal" {
 }
 
 resource "cloudfoundry_route" "konga_internal" {
+  count    = var.enable_konga ? 1 : 0
   domain   = data.cloudfoundry_domain.internal_domain.id
   space    = data.cloudfoundry_space.space.id
   hostname = var.name_postfix == "" ? "konga" : "konga-${var.name_postfix}"
 }
 
 resource "cloudfoundry_network_policy" "konga_internal" {
+  count        = var.enable_konga ? 1 : 0
+
   policy {
     source_app = cloudfoundry_app.konga[0].id
     destination_app = cloudfoundry_app.kong.id
