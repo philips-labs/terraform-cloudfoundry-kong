@@ -10,6 +10,12 @@ variable "konga_image" {
   default     = "pantsel/konga"
 }
 
+variable "kong_plugins" {
+  type        = list(string)
+  description = "List of plugins to load"
+  default     = ["bundled"]
+}
+
 variable "cf_org" {
   type        = string
   description = "The CF Org to deploy under"

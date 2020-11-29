@@ -26,20 +26,20 @@ resource "cloudfoundry_app" "kong" {
   disk_quota        = var.disk
   docker_image      = var.kong_image
   health_check_type = "process"
-  command = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh kong docker-start"
+  command           = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh kong docker-start"
   environment = merge(var.environment,
     {
-      "KONG_DATABASE"     = "postgres"
-      "KONG_PG_USER"      = cloudfoundry_service_key.database_key[0].credentials.username
-      "KONG_PG_PASSWORD"  = cloudfoundry_service_key.database_key[0].credentials.password
-      "KONG_PG_HOST"      = cloudfoundry_service_key.database_key[0].credentials.hostname
-      "KONG_PG_DATABASE"  = cloudfoundry_service_key.database_key[0].credentials.db_name
-      "KONG_PLUGINS"      = "bundled"
-      "KONG_TRUSTED_IPS"  = "0.0.0.0/0"
-      "KONG_REAL_IP_HEADER" = "X-Forwarded-For"
+      "KONG_DATABASE"          = "postgres"
+      "KONG_PG_USER"           = cloudfoundry_service_key.database_key[0].credentials.username
+      "KONG_PG_PASSWORD"       = cloudfoundry_service_key.database_key[0].credentials.password
+      "KONG_PG_HOST"           = cloudfoundry_service_key.database_key[0].credentials.hostname
+      "KONG_PG_DATABASE"       = cloudfoundry_service_key.database_key[0].credentials.db_name
+      "KONG_PLUGINS"           = join(",", var.kong_plugins)
+      "KONG_TRUSTED_IPS"       = "0.0.0.0/0"
+      "KONG_REAL_IP_HEADER"    = "X-Forwarded-For"
       "KONG_REAL_IP_RECURSIVE" = "on"
-      "KONG_PROXY_LISTEN" = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
-      "KONG_ADMIN_LISTEN" = "0.0.0.0:8001"
+      "KONG_PROXY_LISTEN"      = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
+      "KONG_ADMIN_LISTEN"      = "0.0.0.0:8001"
     }
   )
   routes {
@@ -105,13 +105,13 @@ resource "cloudfoundry_route" "konga_internal" {
 }
 
 resource "cloudfoundry_network_policy" "konga_internal" {
-  count        = var.enable_konga ? 1 : 0
+  count = var.enable_konga ? 1 : 0
 
   policy {
-    source_app = cloudfoundry_app.konga[0].id
+    source_app      = cloudfoundry_app.konga[0].id
     destination_app = cloudfoundry_app.kong.id
-    protocol = "tcp"
-    port = "8001"
+    protocol        = "tcp"
+    port            = "8001"
   }
 }
 
