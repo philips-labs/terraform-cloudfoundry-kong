@@ -98,3 +98,9 @@ variable "enable_konga" {
   description = "Enable or disables Konga dashboard"
   default     = true
 }
+
+variable "enable_protected_admin_api" {
+  type        = bool
+  description = "Enables the ADMIN API for use by e.g. Kong provider"
+  default     = true
+}

@@ -1,7 +1,9 @@
 .terraform/
 .idea/
 .vscode/
+nginx-reverse-proxy/nginx.conf
 local.yml
 *.tfvars*
 *.tfstate*
 *.zip
+.htpasswd
