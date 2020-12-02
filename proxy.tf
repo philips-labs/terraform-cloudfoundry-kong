@@ -81,15 +81,13 @@ http {
   port_in_redirect off; # Ensure that redirects don't include the internal container PORT - 8080
   resolver 169.254.0.2;
 
-  upstream kong_api {
-    server "${cloudfoundry_route.kong_internal.endpoint}:8001";
-  }
-
   server {
       listen {{port}}; # This will be replaced by CF magic. Just leave it here.
       index index.html index.htm Default.htm;
 
       location / {
+        set $kong_api "http://${cloudfoundry_route.kong_internal.endpoint}:8001";
+
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -102,7 +100,7 @@ http {
 
         client_max_body_size 10M;
 
-        proxy_pass http://kong_api;
+        proxy_pass $kong_api;
 
         auth_basic           "Kong API";
         auth_basic_user_file ".htpasswd";
