@@ -26,7 +26,7 @@ resource "cloudfoundry_app" "kong" {
   disk_quota        = var.disk
   docker_image      = var.kong_image
   health_check_type = "process"
-  command           = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh kong docker-start"
+  command           = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh /usr/local/bin/kong migrations up && /docker-entrypoint.sh kong docker-start"
   environment = merge(var.environment,
     {
       "KONG_DATABASE"          = "postgres"
