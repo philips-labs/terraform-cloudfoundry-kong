@@ -41,12 +41,17 @@ License is MIT
 |------|---------|
 | terraform | >= 0.13.4 |
 | cloudfoundry | >= 0.1206.0 |
+| htpasswd | >= 0.5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
+| archive | n/a |
 | cloudfoundry | >= 0.1206.0 |
+| htpasswd | >= 0.5.0 |
+| local | n/a |
+| random | n/a |
 
 ## Inputs
 
@@ -61,8 +66,10 @@ License is MIT
 | disk | The amount of Disk space to allocate for Kong (MB) | `number` | `1024` | no |
 | enable\_konga | Enable or disables Konga dashboard | `bool` | `true` | no |
 | enable\_postgres | Enable or disables postgres persistence | `bool` | `true` | no |
+| enable\_protected\_admin\_api | Enables the ADMIN API for use by e.g. Kong provider | `bool` | `true` | no |
 | environment | Environment variables for Kong app | `map` | `{}` | no |
 | kong\_image | Kong Docker image to use | `string` | `"kong"` | no |
+| kong\_plugins | List of plugins to load | `list(string)` | <pre>[<br>  "bundled"<br>]</pre> | no |
 | konga\_environment | Environment variables for Kong app | `map` | `{}` | no |
 | konga\_image | Konga dashboard image to use | `string` | `"pantsel/konga"` | no |
 | memory | The amount of RAM to allocate for Kong (MB) | `number` | `512` | no |
@@ -73,4 +80,7 @@ License is MIT
 
 | Name | Description |
 |------|-------------|
+| kong\_api\_endpoint | The API endpoint where Kong admin API reachable on |
+| kong\_api\_password | The API password |
+| kong\_api\_username | The API username |
 | kong\_endpoint | The endpoint where Kong is reachable on |
