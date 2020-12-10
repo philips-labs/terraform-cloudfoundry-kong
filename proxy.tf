@@ -1,8 +1,3 @@
-resource "random_id" "id" {
-  byte_length = 8
-}
-
-
 data "archive_file" "fixture" {
   type        = "zip"
   source_dir  = "${path.module}/nginx-reverse-proxy"

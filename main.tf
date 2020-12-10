@@ -1,3 +1,7 @@
+resource "random_id" "id" {
+  byte_length = 8
+}
+
 data "cloudfoundry_org" "org" {
   name = var.cf_org
 }
@@ -88,20 +92,20 @@ resource "cloudfoundry_service_key" "database_key" {
 resource "cloudfoundry_route" "kong" {
   domain   = data.cloudfoundry_domain.domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = var.name_postfix == "" ? "kong" : "kong-${var.name_postfix}"
+  hostname = var.name_postfix == "" ? "kong-${random_id.id.hex}" : "kong-${var.name_postfix}"
 }
 
 resource "cloudfoundry_route" "kong_internal" {
   domain   = data.cloudfoundry_domain.internal_domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = var.name_postfix == "" ? "kong" : "kong-${var.name_postfix}"
+  hostname = var.name_postfix == "" ? "kong-${random_id.id.hex}" : "kong-${var.name_postfix}"
 }
 
 resource "cloudfoundry_route" "konga_internal" {
   count    = var.enable_konga ? 1 : 0
   domain   = data.cloudfoundry_domain.internal_domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = var.name_postfix == "" ? "konga" : "konga-${var.name_postfix}"
+  hostname = var.name_postfix == "" ? "konga-${random_id.id.hex}" : "konga-${var.name_postfix}"
 }
 
 resource "cloudfoundry_network_policy" "konga_internal" {
