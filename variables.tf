@@ -36,13 +36,13 @@ variable "name_postfix" {
 }
 
 variable "environment" {
-  type        = map
+  type        = map(any)
   description = "Environment variables for Kong app"
   default     = {}
 }
 
 variable "konga_environment" {
-  type        = map
+  type        = map(any)
   description = "Environment variables for Kong app"
   default     = {}
 }

@@ -5,7 +5,7 @@ output "kong_endpoint" {
 
 output "kong_api_endpoint" {
   description = "The API endpoint where Kong admin API reachable on"
-  value       = cloudfoundry_route.kong_api_route[0].endpoint
+  value       = cloudfoundry_route.kong_api_route[0] ? cloudfoundry_route.kong_api_route[0].endpoint : ""
 }
 
 output "kong_api_username" {

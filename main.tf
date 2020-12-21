@@ -24,11 +24,11 @@ data "cloudfoundry_service" "rds" {
 }
 
 resource "cloudfoundry_app" "kong" {
-  name              = "kong"
-  space             = data.cloudfoundry_space.space.id
-  memory            = var.memory
-  disk_quota        = var.disk
-  docker_image      = var.kong_image
+  name         = "kong"
+  space        = data.cloudfoundry_space.space.id
+  memory       = var.memory
+  disk_quota   = var.disk
+  docker_image = var.kong_image
   docker_credentials = {
     username = var.docker_username
     password = var.docker_password
