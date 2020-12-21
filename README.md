@@ -64,15 +64,17 @@ License is MIT
 | db\_json\_params | Optional DB JSON params | `string` | `"{}"` | no |
 | db\_plan | The Database plan to use | `string` | `"postgres-micro-dev"` | no |
 | disk | The amount of Disk space to allocate for Kong (MB) | `number` | `1024` | no |
+| docker\_password | Docker registry password | `string` | `""` | no |
+| docker\_username | Docker registry username | `string` | `""` | no |
 | enable\_konga | Enable or disables Konga dashboard | `bool` | `true` | no |
 | enable\_postgres | Enable or disables postgres persistence | `bool` | `true` | no |
-| enable\_protected\_admin\_api | Enables the ADMIN API for use by e.g. Kong provider | `bool` | `true` | no |
+| enable\_protected\_admin\_api | Enables the ADMIN API for use by e.g. Kong provider | `bool` | `false` | no |
 | environment | Environment variables for Kong app | `map` | `{}` | no |
 | kong\_image | Kong Docker image to use | `string` | `"kong"` | no |
 | kong\_plugins | List of plugins to load | `list(string)` | <pre>[<br>  "bundled"<br>]</pre> | no |
 | konga\_environment | Environment variables for Kong app | `map` | `{}` | no |
 | konga\_image | Konga dashboard image to use | `string` | `"pantsel/konga"` | no |
-| memory | The amount of RAM to allocate for Kong (MB) | `number` | `512` | no |
+| memory | The amount of RAM to allocate for Kong (MB) | `number` | `1024` | no |
 | name\_postfix | The postfix string to append to the hostname, prevents namespace clashes | `string` | `""` | no |
 | network\_policies | The container-to-container network policies to create with Kong as the source app | <pre>list(object({<br>    destination_app = string<br>    protocol        = string<br>    port            = string<br>  }))</pre> | `[]` | no |
 
