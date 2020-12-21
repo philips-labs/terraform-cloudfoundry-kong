@@ -104,3 +104,15 @@ variable "enable_protected_admin_api" {
   description = "Enables the ADMIN API for use by e.g. Kong provider"
   default     = false
 }
+
+variable "docker_username" {
+  type        = string
+  description = "Docker registry username"
+  default     = ""
+}
+
+variable "docker_password" {
+  type        = string
+  description = "Docker registry password"
+  default     = ""
+}

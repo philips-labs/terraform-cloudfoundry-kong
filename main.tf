@@ -29,6 +29,10 @@ resource "cloudfoundry_app" "kong" {
   memory            = var.memory
   disk_quota        = var.disk
   docker_image      = var.kong_image
+  docker_credentials = {
+    username = var.docker_username
+    password = var.docker_password
+  }
   health_check_type = "process"
   command           = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh /usr/local/bin/kong migrations up && /docker-entrypoint.sh kong docker-start"
   environment = merge(var.environment,
@@ -61,6 +65,10 @@ resource "cloudfoundry_app" "konga" {
   memory       = var.memory
   disk_quota   = var.disk
   docker_image = var.konga_image
+  docker_credentials = {
+    username = var.docker_username
+    password = var.docker_password
+  }
   environment = merge(var.konga_environment,
     {
       "NO_AUTH"  = "true"
