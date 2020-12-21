@@ -26,7 +26,7 @@ module "kong" {
 Accessing the `kong` API endpoint can then be done by SSH forward:
 
 ```
-cf ssh -L8001:localhost:8001 kong
+cf ssh -L 8001:localhost:8001 kong
 ```
 
 # Contact / Getting help
