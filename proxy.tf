@@ -15,8 +15,11 @@ resource "cloudfoundry_app" "kong_api_proxy" {
   buildpack        = "https://github.com/cloudfoundry/nginx-buildpack.git"
   source_code_hash = data.archive_file.fixture.output_base64sha256
 
-  routes {
-    route = cloudfoundry_route.kong_api_route[0].id
+  dynamic "routes" {
+    for_each = cloudfoundry_route.kong_api_route
+    content {
+      route = routes.id
+    }
   }
 
   depends_on = [data.archive_file.fixture]
