@@ -102,7 +102,7 @@ variable "enable_konga" {
 variable "enable_protected_admin_api" {
   type        = bool
   description = "Enables the ADMIN API for use by e.g. Kong provider"
-  default     = false
+  default     = true
 }
 
 variable "docker_username" {

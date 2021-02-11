@@ -18,7 +18,7 @@ resource "cloudfoundry_app" "kong_api_proxy" {
   dynamic "routes" {
     for_each = cloudfoundry_route.kong_api_route
     content {
-      route = routes.id
+      route = routes.value.id
     }
   }
 
