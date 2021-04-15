@@ -47,7 +47,7 @@ resource "random_password" "password" {
   length = 30
 }
 
-data "htpasswd_password" "hash" {
+resource "htpasswd_password" "hash" {
   password = random_password.password.result
   salt     = substr(sha512(random_password.password.result), 0, 8)
 }
@@ -55,7 +55,7 @@ data "htpasswd_password" "hash" {
 resource "local_file" "nginx_htpasswd" {
   filename = "${path.module}/nginx-reverse-proxy/.htpasswd"
   content  = <<EOF
-${random_id.id.hex}:${data.htpasswd_password.hash.apr1}
+${random_id.id.hex}:${htpasswd_password.hash.apr1}
 EOF
 }
 
