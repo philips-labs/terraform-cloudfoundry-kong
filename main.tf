@@ -72,7 +72,7 @@ resource "cloudfoundry_app" "konga" {
   environment = merge(var.konga_environment,
     {
       "NO_AUTH"  = "true"
-      "NODE_ENV" = "development"
+      "NODE_ENV" = "production"
     }
   )
 
