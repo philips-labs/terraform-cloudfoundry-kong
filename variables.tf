@@ -1,7 +1,7 @@
 variable "kong_image" {
   type        = string
   description = "Kong Docker image to use"
-  default     = "kong"
+  default     = "kong/kong:2.4.1"
 }
 
 variable "konga_image" {
@@ -70,11 +70,6 @@ variable "disk" {
   default     = 1024
 }
 
-variable "db_broker" {
-  type        = string
-  description = "The Database broker to use for requesting a PostgreSQL database"
-  default     = "hsdp-rds"
-}
 variable "db_plan" {
   type        = string
   description = "The Database plan to use"
