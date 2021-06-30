@@ -19,10 +19,6 @@ data "cloudfoundry_domain" "internal_domain" {
   name = "apps.internal"
 }
 
-data "cloudfoundry_service" "rds" {
-  name = var.db_broker
-}
-
 resource "cloudfoundry_app" "kong" {
   name         = "kong"
   space        = data.cloudfoundry_space.space.id
@@ -38,10 +34,10 @@ resource "cloudfoundry_app" "kong" {
   environment = merge(var.environment,
     {
       "KONG_DATABASE"          = "postgres"
-      "KONG_PG_USER"           = cloudfoundry_service_key.database_key[0].credentials.username
-      "KONG_PG_PASSWORD"       = cloudfoundry_service_key.database_key[0].credentials.password
-      "KONG_PG_HOST"           = cloudfoundry_service_key.database_key[0].credentials.hostname
-      "KONG_PG_DATABASE"       = cloudfoundry_service_key.database_key[0].credentials.db_name
+      "KONG_PG_USER"           = module.postgres[0].credentials.username
+      "KONG_PG_PASSWORD"       = module.postgres[0].credentials.password
+      "KONG_PG_HOST"           = module.postgres[0].credentials.hostname
+      "KONG_PG_DATABASE"       = module.postgres[0].credentials.db_name
       "KONG_PLUGINS"           = join(",", var.kong_plugins)
       "KONG_TRUSTED_IPS"       = "0.0.0.0/0"
       "KONG_REAL_IP_HEADER"    = "X-Forwarded-For"
@@ -90,20 +86,12 @@ resource "cloudfoundry_app" "konga" {
   }
 }
 
-
-resource "cloudfoundry_service_instance" "database" {
-  count        = var.enable_postgres ? 1 : 0
-  name         = "kong-rds"
-  space        = data.cloudfoundry_space.space.id
-  service_plan = data.cloudfoundry_service.rds.service_plans[var.db_plan]
-  json_params  = var.db_json_params
-}
-
-
-resource "cloudfoundry_service_key" "database_key" {
-  count            = var.enable_postgres ? 1 : 0
-  name             = "key"
-  service_instance = cloudfoundry_service_instance.database[0].id
+module "postgres" {
+  count       = var.enable_postgres ? 1 : 0
+  source      = "philips-labs/postgres-service/hsdp"
+  version     = "0.0.3"
+  cf_space_id = data.cloudfoundry_space.space.id
+  plan        = var.db_plan
 }
 
 resource "cloudfoundry_route" "kong" {
