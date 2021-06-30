@@ -52,6 +52,15 @@ resource "cloudfoundry_app" "kong" {
   routes {
     route = cloudfoundry_route.kong_internal.id
   }
+
+  labels = {
+    "variant.tva/exporter" = true,
+  }
+  annotations = {
+    "prometheus.exporter.type" = "kong_exporter"
+    "prometheus.exporter.port" = "8001"
+    "prometheus.exporter.path" = "/metrics"
+  }
 }
 
 resource "cloudfoundry_app" "konga" {
@@ -74,15 +83,6 @@ resource "cloudfoundry_app" "konga" {
 
   routes {
     route = cloudfoundry_route.konga_internal[0].id
-  }
-
-  labels = {
-    "variant.tva/exporter" = true,
-  }
-  annotations = {
-    "prometheus.exporter.type" = "kong_exporter"
-    "prometheus.exporter.port" = "8001"
-    "prometheus.exporter.path" = "/metrics"
   }
 }
 
