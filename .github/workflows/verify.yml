@@ -27,7 +27,7 @@ jobs:
     name: Verify examples
     strategy:
       matrix:
-        terraform: [0.14.5, latest]
+        terraform: [1.0.0, latest]
         example: ["default"]
     defaults:
       run:
