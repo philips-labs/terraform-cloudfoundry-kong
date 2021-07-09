@@ -29,6 +29,9 @@ resource "cloudfoundry_app" "kong" {
     username = var.docker_username
     password = var.docker_password
   }
+  lifecycle {
+    ignore_changes = [ instances ]
+  }
   health_check_type = "process"
   command           = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh /usr/local/bin/kong migrations up && /docker-entrypoint.sh kong docker-start"
   environment = merge(var.environment,
