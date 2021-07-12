@@ -1,3 +1,7 @@
+locals {
+  postfix = var.name_postfix != "" ? var.name_postfix : random_id.id.hex
+}
+
 resource "random_id" "id" {
   byte_length = 4
 }
@@ -20,7 +24,7 @@ data "cloudfoundry_domain" "internal_domain" {
 }
 
 resource "cloudfoundry_app" "kong" {
-  name         = "kong"
+  name         = "tf-kong-${local.postfix}"
   space        = data.cloudfoundry_space.space.id
   memory       = var.memory
   disk_quota   = var.disk
@@ -30,7 +34,7 @@ resource "cloudfoundry_app" "kong" {
     password = var.docker_password
   }
   lifecycle {
-    ignore_changes = [ instances ]
+    ignore_changes = [instances]
   }
   health_check_type = "process"
   command           = "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh /usr/local/bin/kong migrations up && /docker-entrypoint.sh kong docker-start"
@@ -60,15 +64,15 @@ resource "cloudfoundry_app" "kong" {
     "variant.tva/exporter" = true,
   }
   annotations = {
-    "prometheus.exporter.type" = "kong_exporter"
-    "prometheus.exporter.port" = "8001"
-    "prometheus.exporter.path" = "/metrics"
+    "prometheus.exporter.instance_name" = "${data.cloudfoundry_org.org.name}.${data.cloudfoundry_space.space.name}.kong-${local.postfix}-$${1}"
+    "prometheus.exporter.port"          = "8001"
+    "prometheus.exporter.path"          = "/metrics"
   }
 }
 
 resource "cloudfoundry_app" "konga" {
   count        = var.enable_konga ? 1 : 0
-  name         = "konga"
+  name         = "tf-konga-${local.postfix}"
   space        = data.cloudfoundry_space.space.id
   memory       = var.memory
   disk_quota   = var.disk
@@ -100,20 +104,20 @@ module "postgres" {
 resource "cloudfoundry_route" "kong" {
   domain   = data.cloudfoundry_domain.domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = var.name_postfix == "" ? "kong-${random_id.id.hex}" : "kong-${var.name_postfix}"
+  hostname = "tf-kong-${local.postfix}"
 }
 
 resource "cloudfoundry_route" "kong_internal" {
   domain   = data.cloudfoundry_domain.internal_domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = var.name_postfix == "" ? "kong-${random_id.id.hex}" : "kong-${var.name_postfix}"
+  hostname = "tf-kong-${local.postfix}"
 }
 
 resource "cloudfoundry_route" "konga_internal" {
   count    = var.enable_konga ? 1 : 0
   domain   = data.cloudfoundry_domain.internal_domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = var.name_postfix == "" ? "konga-${random_id.id.hex}" : "konga-${var.name_postfix}"
+  hostname = "tf-konga-${local.postfix}"
 }
 
 resource "cloudfoundry_network_policy" "konga_internal" {

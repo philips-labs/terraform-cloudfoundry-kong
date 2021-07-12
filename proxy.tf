@@ -7,7 +7,7 @@ data "archive_file" "fixture" {
 
 resource "cloudfoundry_app" "kong_api_proxy" {
   count            = var.enable_protected_admin_api ? 1 : 0
-  name             = "kong-api-proxy"
+  name             = "tf-kong-api-proxy-${local.postfix}"
   space            = data.cloudfoundry_space.space.id
   memory           = 128
   disk_quota       = 512
@@ -29,7 +29,7 @@ resource "cloudfoundry_route" "kong_api_route" {
   count    = var.enable_protected_admin_api ? 1 : 0
   domain   = data.cloudfoundry_domain.domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = "kong-api-${random_id.id.hex}"
+  hostname = "tf-kong-api-${local.postfix}"
 }
 
 resource "cloudfoundry_network_policy" "kong_api_proxy" {
