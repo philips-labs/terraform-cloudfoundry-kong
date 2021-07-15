@@ -2,7 +2,7 @@ data "archive_file" "fixture" {
   type        = "zip"
   source_dir  = "${path.module}/nginx-reverse-proxy"
   output_path = "${path.module}/nginx-reverse-proxy.zip"
-  depends_on  = [local_file.nginx_conf, local_file.nginx_htpasswd]
+  depends_on  = [local_file.nginx_conf, local_file.nginx_htpasswd, local.postfix, cloudfoundry_route.kong_internal]
 }
 
 resource "cloudfoundry_app" "kong_api_proxy" {
