@@ -29,8 +29,11 @@ Accessing the `kong` API endpoint can then be done by SSH forward:
 cf ssh -L 8001:localhost:8001 kong
 ```
 
+# Terraform module registry
+The module is [published here](https://registry.terraform.io/modules/philips-labs/kong/cloudfoundry/latest)
+
 # Contact / Getting help
-andy.lo-a-foe@philips.com
+Please post your questions on the HSDP Slack `#terraform` channel, or start a [discussion](https://github.com/philips-labs/terraform-cloudfoundry-kong/discussions)
 
 # License
 License is MIT
