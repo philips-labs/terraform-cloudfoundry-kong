@@ -1,6 +1,6 @@
 locals {
   postfix = var.name_postfix != "" ? var.name_postfix : random_id.id.hex
-  domain = var.cf_domain_name == "" ? data.hsdp_config.cf[0].domain : var.cf_domain_name
+  domain  = var.cf_domain_name == "" ? data.hsdp_config.cf[0].domain : var.cf_domain_name
 }
 
 resource "random_id" "id" {
@@ -8,7 +8,7 @@ resource "random_id" "id" {
 }
 
 data "hsdp_config" "cf" {
-  count = var.cf_domain_name == "" ? 1 : 0
+  count   = var.cf_domain_name == "" ? 1 : 0
   service = "cf"
 }
 

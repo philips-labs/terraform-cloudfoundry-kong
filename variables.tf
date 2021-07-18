@@ -27,7 +27,7 @@ variable "cf_space_name" {
 variable "cf_domain_name" {
   type        = string
   description = "The CF domain to use for Kong"
-  default = ""
+  default     = ""
 }
 
 variable "name_postfix" {
