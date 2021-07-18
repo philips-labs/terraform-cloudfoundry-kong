@@ -1,22 +1,28 @@
 locals {
   postfix = var.name_postfix != "" ? var.name_postfix : random_id.id.hex
+  domain = var.cf_domain_name == "" ? data.hsdp_config.cf[0].domain : var.cf_domain_name
 }
 
 resource "random_id" "id" {
   byte_length = 4
 }
 
+data "hsdp_config" "cf" {
+  count = var.cf_domain_name == "" ? 1 : 0
+  service = "cf"
+}
+
 data "cloudfoundry_org" "org" {
-  name = var.cf_org
+  name = var.cf_org_name
 }
 
 data "cloudfoundry_space" "space" {
   org  = data.cloudfoundry_org.org.id
-  name = var.cf_space
+  name = var.cf_space_name
 }
 
 data "cloudfoundry_domain" "domain" {
-  name = var.cf_domain
+  name = local.domain
 }
 
 data "cloudfoundry_domain" "internal_domain" {

@@ -16,17 +16,18 @@ variable "kong_plugins" {
   default     = ["bundled"]
 }
 
-variable "cf_org" {
+variable "cf_org_name" {
   type        = string
   description = "The CF Org to deploy under"
 }
-variable "cf_space" {
+variable "cf_space_name" {
   type        = string
   description = "The CF Space to deploy in"
 }
-variable "cf_domain" {
+variable "cf_domain_name" {
   type        = string
   description = "The CF domain to use for Kong"
+  default = ""
 }
 
 variable "name_postfix" {

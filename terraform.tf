@@ -6,6 +6,9 @@ terraform {
       source  = "cloudfoundry-community/cloudfoundry"
       version = ">= 0.14.1"
     }
+    hsdp = {
+      source = "philips-software/hsdp"
+    }
     htpasswd = {
       source  = "loafoe/htpasswd"
       version = ">= 0.5.0"
