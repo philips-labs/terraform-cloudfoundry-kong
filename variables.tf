@@ -62,7 +62,7 @@ variable "network_policies" {
 variable "memory" {
   type        = number
   description = "The amount of RAM to allocate for Kong (MB)"
-  default     = 1024
+  default     = 1536
 }
 
 variable "disk" {
