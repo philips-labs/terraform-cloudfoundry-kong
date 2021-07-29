@@ -59,7 +59,7 @@ resource "cloudfoundry_app" "kong" {
       "KONG_PG_HOST"     = module.postgres[0].credentials.hostname
       "KONG_PG_DATABASE" = module.postgres[0].credentials.db_name
       } : {
-      "KONG_DATABASE"    = "off"
+      "KONG_DATABASE"                  = "off"
       "KONG_DECLARATIVE_CONFIG_STRING" = var.kong_declarative_config_string
     }
 
