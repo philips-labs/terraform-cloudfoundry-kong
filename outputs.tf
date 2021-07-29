@@ -15,5 +15,5 @@ output "kong_api_username" {
 
 output "kong_api_password" {
   description = "The API password"
-  value       = random_password.password.result
+  value       = join("", random_password.password.*.result)
 }

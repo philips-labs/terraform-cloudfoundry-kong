@@ -1,4 +1,5 @@
 data "archive_file" "fixture" {
+  count            = var.enable_protected_admin_api ? 1 : 0
   type        = "zip"
   source_dir  = "${path.module}/nginx-reverse-proxy"
   output_path = "${path.module}/nginx-reverse-proxy.zip"
@@ -13,7 +14,7 @@ resource "cloudfoundry_app" "kong_api_proxy" {
   disk_quota       = 512
   path             = "${path.module}/nginx-reverse-proxy.zip"
   buildpack        = "https://github.com/cloudfoundry/nginx-buildpack.git"
-  source_code_hash = data.archive_file.fixture.output_base64sha256
+  source_code_hash = data.archive_file.fixture[count.index].output_base64sha256
 
   dynamic "routes" {
     for_each = cloudfoundry_route.kong_api_route
@@ -44,22 +45,26 @@ resource "cloudfoundry_network_policy" "kong_api_proxy" {
 }
 
 resource "random_password" "password" {
+  count            = var.enable_protected_admin_api ? 1 : 0
   length = 30
 }
 
 resource "htpasswd_password" "hash" {
-  password = random_password.password.result
-  salt     = substr(sha512(random_password.password.result), 0, 8)
+  count            = var.enable_protected_admin_api ? 1 : 0
+  password = random_password.password[count.index].result
+  salt     = substr(sha512(random_password.password[count.index].result), 0, 8)
 }
 
 resource "local_file" "nginx_htpasswd" {
+  count            = var.enable_protected_admin_api ? 1 : 0
   filename = "${path.module}/nginx-reverse-proxy/.htpasswd"
   content  = <<EOF
-${random_id.id.hex}:${htpasswd_password.hash.apr1}
+${random_id.id.hex}:${htpasswd_password.hash[count.index].apr1}
 EOF
 }
 
 resource "local_file" "nginx_conf" {
+  count            = var.enable_protected_admin_api ? 1 : 0
   filename = "${path.module}/nginx-reverse-proxy/nginx.conf"
   content  = <<EOF
 worker_processes 1;
