@@ -42,6 +42,12 @@ variable "environment" {
   default     = {}
 }
 
+variable "kong_declarative_config_string" {
+  type        = string
+  description = "Declarative configuration json for Kong. To be provided while running in db less declarative mode"
+  default     = "{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"hsdp.io\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"
+}
+
 variable "konga_environment" {
   type        = map(any)
   description = "Environment variables for Kong app"
