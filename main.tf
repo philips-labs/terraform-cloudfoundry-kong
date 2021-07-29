@@ -52,14 +52,14 @@ resource "cloudfoundry_app" "kong" {
       "KONG_REAL_IP_RECURSIVE" = "on"
       "KONG_PROXY_LISTEN"      = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
       "KONG_ADMIN_LISTEN"      = "0.0.0.0:8001"
-    }, var.enable_postgres ? {
-      "KONG_DATABASE"          = "postgres"
-      "KONG_PG_USER"           = module.postgres[0].credentials.username
-      "KONG_PG_PASSWORD"       = module.postgres[0].credentials.password
-      "KONG_PG_HOST"           = module.postgres[0].credentials.hostname
-      "KONG_PG_DATABASE"       = module.postgres[0].credentials.db_name
-    } : {
-      "KONG_DATABASE"          = "off"
+      }, var.enable_postgres ? {
+      "KONG_DATABASE"    = "postgres"
+      "KONG_PG_USER"     = module.postgres[0].credentials.username
+      "KONG_PG_PASSWORD" = module.postgres[0].credentials.password
+      "KONG_PG_HOST"     = module.postgres[0].credentials.hostname
+      "KONG_PG_DATABASE" = module.postgres[0].credentials.db_name
+      } : {
+      "KONG_DATABASE"    = "off"
       "KONG_DECLARATIVE_CONFIG_STRING" = var.kong_declarative_config_string
     }
 
