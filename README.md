@@ -71,10 +71,10 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 | <a name="input_docker_password"></a> [docker\_password](#input\_docker\_password) | Docker registry password | `string` | `""` | no |
 | <a name="input_docker_username"></a> [docker\_username](#input\_docker\_username) | Docker registry username | `string` | `""` | no |
 | <a name="input_enable_konga"></a> [enable\_konga](#input\_enable\_konga) | Enable or disables Konga dashboard | `bool` | `true` | no |
-| <a name="input_enable_postgres"></a> [enable\_postgres](#input\_enable\_postgres) | Enable or disables postgres persistence | `bool` | `true` | no |
+| <a name="input_enable_postgres"></a> [enable\_postgres](#input\_enable\_postgres) | Enable or disables postgres persistence | `bool` | `false` | no |
 | <a name="input_enable_protected_admin_api"></a> [enable\_protected\_admin\_api](#input\_enable\_protected\_admin\_api) | Enables the ADMIN API for use by e.g. Kong provider | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment variables for Kong app | `map(any)` | `{}` | no |
-| <a name="input_kong_declarative_config_string"></a> [kong\_declarative\_config\_string](#input\_kong\_declarative\_config\_string) | Declarative configuration json for Kong. To be provided while running in db less declarative mode | `string` | `"{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"hsdp.io\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"` | no |
+| <a name="input_kong_declarative_config_string"></a> [kong\_declarative\_config\_string](#input\_kong\_declarative\_config\_string) | Declarative configuration json for Kong. To be provided while running in db less declarative mode | `string` | `"{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"go-hello-world.eu-west.philips-healthsuite.com\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"` | no |
 | <a name="input_kong_image"></a> [kong\_image](#input\_kong\_image) | Kong Docker image to use | `string` | `"kong/kong:2.5.0"` | no |
 | <a name="input_kong_plugins"></a> [kong\_plugins](#input\_kong\_plugins) | List of plugins to load | `list(string)` | <pre>[<br>  "bundled"<br>]</pre> | no |
 | <a name="input_konga_environment"></a> [konga\_environment](#input\_konga\_environment) | Environment variables for Kong app | `map(any)` | `{}` | no |
