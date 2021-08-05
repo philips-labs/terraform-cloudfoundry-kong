@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+## v2.2.5
+- Fix example
+
+## v2.2.4
+- Documentation fix
+
 ## v2.2.3
 - Fix syntax
 
