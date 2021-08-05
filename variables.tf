@@ -45,7 +45,7 @@ variable "environment" {
 variable "kong_declarative_config_string" {
   type        = string
   description = "Declarative configuration json for Kong. To be provided while running in db less declarative mode"
-  default     = "{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"hsdp.io\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"
+  default     = "{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"go-hello-world.eu-west.philips-healthsuite.com\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"
 }
 
 variable "konga_environment" {
@@ -92,7 +92,7 @@ variable "db_json_params" {
 variable "enable_postgres" {
   type        = bool
   description = "Enable or disables postgres persistence"
-  default     = true
+  default     = false
 }
 
 variable "enable_konga" {
