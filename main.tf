@@ -74,11 +74,25 @@ resource "cloudfoundry_app" "kong" {
 
   labels = {
     "variant.tva/exporter" = true,
+    "variant.tva/alerts" = true,
+    "variant.tva/recorders" = false,
   }
   annotations = {
     "prometheus.exporter.instance_name" = "${data.cloudfoundry_org.org.name}.${data.cloudfoundry_space.space.name}.kong-${local.postfix}-$${1}"
     "prometheus.exporter.port"          = "8001"
     "prometheus.exporter.path"          = "/metrics"
+    "prometheus.alerts.json" = jsonencode([{
+      name = "KongDataStoreReachable"
+      expr = "kong_datastore_reachable < 1"
+      for = "5m"
+      labels = {
+        severity = "critical"
+      }
+      annotations = {
+        summary = "Instance {{ $labels.instance }} data store not reachable"
+        description = "{{ $labels.instance }} data store is not reachable for 5 minutes or longer"
+      }
+    }])
   }
 }
 
