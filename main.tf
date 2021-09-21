@@ -44,26 +44,23 @@ resource "cloudfoundry_app" "kong" {
   }
   health_check_type = "process"
   command           = var.enable_postgres ? "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh /usr/local/bin/kong migrations up && /docker-entrypoint.sh kong docker-start" : "/docker-entrypoint.sh kong docker-start"
-  environment = merge(var.environment,
-    {
-      KONG_PLUGINS           = join(",", var.kong_plugins)
-      KONG_TRUSTED_IPS       = "0.0.0.0/0"
-      KONG_REAL_IP_HEADER    = "X-Forwarded-For"
-      KONG_REAL_IP_RECURSIVE = "on"
-      KONG_PROXY_LISTEN      = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
-      KONG_ADMIN_LISTEN      = "0.0.0.0:8001"
-      }, var.enable_postgres ? {
-      KONG_DATABASE    = "postgres"
-      KONG_PG_USER     = module.postgres[0].credentials.username
-      KONG_PG_PASSWORD = module.postgres[0].credentials.password
-      KONG_PG_HOST     = module.postgres[0].credentials.hostname
-      KONG_PG_DATABASE = module.postgres[0].credentials.db_name
-      } : {
-      KONG_DATABASE                  = "off"
-      KONG_DECLARATIVE_CONFIG_STRING = var.kong_declarative_config_string
-    }
-
-  )
+  environment = merge({
+    KONG_PLUGINS           = join(",", var.kong_plugins)
+    KONG_TRUSTED_IPS       = "0.0.0.0/0"
+    KONG_REAL_IP_HEADER    = "X-Forwarded-For"
+    KONG_REAL_IP_RECURSIVE = "on"
+    KONG_PROXY_LISTEN      = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
+    KONG_ADMIN_LISTEN      = "0.0.0.0:8001"
+    }, var.enable_postgres ? {
+    KONG_DATABASE    = "postgres"
+    KONG_PG_USER     = module.postgres[0].credentials.username
+    KONG_PG_PASSWORD = module.postgres[0].credentials.password
+    KONG_PG_HOST     = module.postgres[0].credentials.hostname
+    KONG_PG_DATABASE = module.postgres[0].credentials.db_name
+    } : {
+    KONG_DATABASE                  = "off"
+    KONG_DECLARATIVE_CONFIG_STRING = var.kong_declarative_config_string
+  }, var.environment)
 
   routes {
     route = cloudfoundry_route.kong.id
@@ -73,8 +70,8 @@ resource "cloudfoundry_app" "kong" {
   }
 
   labels = {
-    "variant.tva/exporter" = true,
-    "variant.tva/alerts" = true,
+    "variant.tva/exporter"  = true,
+    "variant.tva/alerts"    = true,
     "variant.tva/recorders" = false,
   }
   annotations = {
@@ -84,12 +81,12 @@ resource "cloudfoundry_app" "kong" {
     "prometheus.alerts.json" = jsonencode([{
       name = "KongDataStoreReachable"
       expr = "kong_datastore_reachable < 1"
-      for = "5m"
+      for  = "5m"
       labels = {
         severity = "critical"
       }
       annotations = {
-        summary = "Instance {{ $labels.instance }} data store not reachable"
+        summary     = "Instance {{ $labels.instance }} data store not reachable"
         description = "{{ $labels.instance }} data store is not reachable for 5 minutes or longer"
       }
     }])
