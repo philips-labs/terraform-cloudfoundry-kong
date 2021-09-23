@@ -45,12 +45,13 @@ resource "cloudfoundry_app" "kong" {
   health_check_type = "process"
   command           = var.enable_postgres ? "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh /usr/local/bin/kong migrations up && /docker-entrypoint.sh kong docker-start" : "/docker-entrypoint.sh kong docker-start"
   environment = merge({
-    KONG_PLUGINS           = join(",", var.kong_plugins)
-    KONG_TRUSTED_IPS       = "0.0.0.0/0"
-    KONG_REAL_IP_HEADER    = "X-Forwarded-For"
-    KONG_REAL_IP_RECURSIVE = "on"
-    KONG_PROXY_LISTEN      = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
-    KONG_ADMIN_LISTEN      = "0.0.0.0:8001"
+    KONG_PLUGINS                = join(",", var.kong_plugins)
+    KONG_TRUSTED_IPS            = "0.0.0.0/0"
+    KONG_REAL_IP_HEADER         = "X-Forwarded-For"
+    KONG_REAL_IP_RECURSIVE      = "on"
+    KONG_PROXY_LISTEN           = "0.0.0.0:8080 reuseport backlog=16384,0.0.0.0:8000 reuseport backlog=16384,0.0.0.0:8443 http2 ssl reuseport backlog=16384,0.0.0.0:8444 http2 ssl reuseport backlog=16384"
+    KONG_ADMIN_LISTEN           = "0.0.0.0:8001"
+    KONG_NGINX_WORKER_PROCESSES = var.kong_nginx_worker_processes
     }, var.enable_postgres ? {
     KONG_DATABASE    = "postgres"
     KONG_PG_USER     = module.postgres[0].credentials.username
@@ -70,9 +71,8 @@ resource "cloudfoundry_app" "kong" {
   }
 
   labels = {
-    "variant.tva/exporter"  = true,
-    "variant.tva/alerts"    = true,
-    "variant.tva/recorders" = false,
+    "variant.tva/exporter" = true
+    "variant.tva/alerts"   = true
   }
   annotations = {
     "prometheus.exporter.instance_name" = "${data.cloudfoundry_org.org.name}.${data.cloudfoundry_space.space.name}.kong-${local.postfix}-$${1}"

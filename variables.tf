@@ -48,6 +48,12 @@ variable "kong_declarative_config_string" {
   default     = "{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"go-hello-world.eu-west.philips-healthsuite.com\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"
 }
 
+variable "kong_nginx_worker_processes" {
+  type        = number
+  description = "Number of worker processes to use. When increase this, also increase memory allocation"
+  default     = 4
+}
+
 variable "konga_environment" {
   type        = map(any)
   description = "Environment variables for Kong app"
@@ -68,7 +74,7 @@ variable "network_policies" {
 variable "memory" {
   type        = number
   description = "The amount of RAM to allocate for Kong (MB)"
-  default     = 1536
+  default     = 1024
 }
 
 variable "disk" {
@@ -98,7 +104,7 @@ variable "enable_postgres" {
 variable "enable_konga" {
   type        = bool
   description = "Enable or disables Konga dashboard"
-  default     = true
+  default     = false
 }
 
 variable "enable_protected_admin_api" {
