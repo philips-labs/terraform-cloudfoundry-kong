@@ -75,7 +75,7 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 | <a name="input_enable_protected_admin_api"></a> [enable\_protected\_admin\_api](#input\_enable\_protected\_admin\_api) | Enables the ADMIN API for use by e.g. Kong provider | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment variables for Kong app | `map(any)` | `{}` | no |
 | <a name="input_kong_declarative_config_string"></a> [kong\_declarative\_config\_string](#input\_kong\_declarative\_config\_string) | Declarative configuration json for Kong. To be provided while running in db less declarative mode | `string` | `"{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"go-hello-world.eu-west.philips-healthsuite.com\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"` | no |
-| <a name="input_kong_image"></a> [kong\_image](#input\_kong\_image) | Kong Docker image to use | `string` | `"kong/kong:2.5.0"` | no |
+| <a name="input_kong_image"></a> [kong\_image](#input\_kong\_image) | Kong Docker image to use | `string` | `"kong/kong:2.6.0"` | no |
 | <a name="input_kong_nginx_worker_processes"></a> [kong\_nginx\_worker\_processes](#input\_kong\_nginx\_worker\_processes) | Number of worker processes to use. When increase this, also increase memory allocation | `number` | `4` | no |
 | <a name="input_kong_plugins"></a> [kong\_plugins](#input\_kong\_plugins) | List of plugins to load | `list(string)` | <pre>[<br>  "bundled"<br>]</pre> | no |
 | <a name="input_konga_environment"></a> [konga\_environment](#input\_konga\_environment) | Environment variables for Kong app | `map(any)` | `{}` | no |
