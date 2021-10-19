@@ -115,7 +115,7 @@ variable "enable_protected_admin_api" {
 
 variable "strategy" {
   type         = string
-  desscription = "Deployment strategy, 'none' or 'blue-green', default is 'none'"
+  description = "Deployment strategy, 'none' or 'blue-green', default is 'none'"
   default      = "none"
 }
 
