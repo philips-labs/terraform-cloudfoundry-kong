@@ -149,7 +149,7 @@ resource "cloudfoundry_network_policy" "konga_internal" {
 
   policy {
     source_app      = cloudfoundry_app.konga[0].id
-    destination_app = cloudfoundry_app.kong.id
+    destination_app = cloudfoundry_app.kong.id_bg
     protocol        = "tcp"
     port            = "8001"
   }
@@ -165,7 +165,7 @@ resource "cloudfoundry_network_policy" "kong" {
       protocol        = p.protocol
     }]
     content {
-      source_app      = cloudfoundry_app.kong.id
+      source_app      = cloudfoundry_app.kong.id_bg
       destination_app = policy.value.destination_app
       protocol        = policy.value.protocol == "" ? "tcp" : policy.value.protocol
       port            = policy.value.port
