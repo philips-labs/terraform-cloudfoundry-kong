@@ -113,6 +113,12 @@ variable "enable_protected_admin_api" {
   default     = false
 }
 
+variable "strategy" {
+  type         = string
+  desscription = "Deployment strategy, 'none' or 'blue-green', default is 'none'"
+  default      = "none"
+}
+
 variable "docker_username" {
   type        = string
   description = "Docker registry username"

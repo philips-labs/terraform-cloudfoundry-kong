@@ -42,6 +42,7 @@ resource "cloudfoundry_app" "kong" {
   lifecycle {
     ignore_changes = [instances]
   }
+  strategy          = var.strategy
   health_check_type = "process"
   command           = var.enable_postgres ? "/docker-entrypoint.sh /usr/local/bin/kong migrations bootstrap && /docker-entrypoint.sh /usr/local/bin/kong migrations up && /docker-entrypoint.sh kong docker-start" : "/docker-entrypoint.sh kong docker-start"
   environment = merge({
