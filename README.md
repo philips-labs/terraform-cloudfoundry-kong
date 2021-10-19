@@ -83,7 +83,7 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 | <a name="input_memory"></a> [memory](#input\_memory) | The amount of RAM to allocate for Kong (MB) | `number` | `1024` | no |
 | <a name="input_name_postfix"></a> [name\_postfix](#input\_name\_postfix) | The postfix string to append to the hostname, prevents namespace clashes | `string` | `""` | no |
 | <a name="input_network_policies"></a> [network\_policies](#input\_network\_policies) | The container-to-container network policies to create with Kong as the source app | <pre>list(object({<br>    destination_app = string<br>    protocol        = string<br>    port            = string<br>  }))</pre> | `[]` | no |
-| <a name="input_strategy"></a> [strategy](#input\_strategy) | n/a | `string` | `"none"` | no |
+| <a name="input_strategy"></a> [strategy](#input\_strategy) | Deployment strategy, 'none' or 'blue-green', default is 'none' | `string` | `"none"` | no |
 
 ## Outputs
 
