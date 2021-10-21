@@ -17,3 +17,8 @@ output "kong_api_password" {
   description = "The API password"
   value       = join("", random_password.password.*.result)
 }
+
+output "kong_app_id" {
+  description = "The Kong app id"
+  value       = cloudfoundry_app.kong.id_bg
+}
