@@ -92,6 +92,7 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 | <a name="output_kong_api_endpoint"></a> [kong\_api\_endpoint](#output\_kong\_api\_endpoint) | The API endpoint where Kong admin API reachable on |
 | <a name="output_kong_api_password"></a> [kong\_api\_password](#output\_kong\_api\_password) | The API password |
 | <a name="output_kong_api_username"></a> [kong\_api\_username](#output\_kong\_api\_username) | The API username |
+| <a name="output_kong_app_id"></a> [kong\_app\_id](#output\_kong\_app\_id) | The Kong app id |
 | <a name="output_kong_endpoint"></a> [kong\_endpoint](#output\_kong\_endpoint) | The endpoint where Kong is reachable on |
 
 <!--- END_TF_DOCS --->
