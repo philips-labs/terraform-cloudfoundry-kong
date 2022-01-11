@@ -38,19 +38,16 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 |------|------|
 | [cloudfoundry_app.kong](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/app) | resource |
 | [cloudfoundry_app.kong_api_proxy](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/app) | resource |
-| [cloudfoundry_app.konga](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/app) | resource |
 | [cloudfoundry_network_policy.kong](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/network_policy) | resource |
 | [cloudfoundry_network_policy.kong_api_proxy](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/network_policy) | resource |
-| [cloudfoundry_network_policy.konga_internal](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/network_policy) | resource |
 | [cloudfoundry_route.kong](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/route) | resource |
 | [cloudfoundry_route.kong_api_route](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/route) | resource |
 | [cloudfoundry_route.kong_internal](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/route) | resource |
-| [cloudfoundry_route.konga_internal](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/resources/route) | resource |
 | [htpasswd_password.hash](https://registry.terraform.io/providers/loafoe/htpasswd/latest/docs/resources/password) | resource |
 | [local_file.nginx_conf](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
 | [local_file.nginx_htpasswd](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
-| [random_id.id](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) | resource |
 | [random_password.password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [random_pet.deploy](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
 | [archive_file.fixture](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [cloudfoundry_domain.domain](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/data-sources/domain) | data source |
 | [cloudfoundry_domain.internal_domain](https://registry.terraform.io/providers/cloudfoundry-community/cloudfoundry/latest/docs/data-sources/domain) | data source |
@@ -70,16 +67,14 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 | <a name="input_disk"></a> [disk](#input\_disk) | The amount of Disk space to allocate for Kong (MB) | `number` | `1024` | no |
 | <a name="input_docker_password"></a> [docker\_password](#input\_docker\_password) | Docker registry password | `string` | `""` | no |
 | <a name="input_docker_username"></a> [docker\_username](#input\_docker\_username) | Docker registry username | `string` | `""` | no |
-| <a name="input_enable_konga"></a> [enable\_konga](#input\_enable\_konga) | Enable or disables Konga dashboard | `bool` | `false` | no |
 | <a name="input_enable_postgres"></a> [enable\_postgres](#input\_enable\_postgres) | Enable or disables postgres persistence | `bool` | `false` | no |
 | <a name="input_enable_protected_admin_api"></a> [enable\_protected\_admin\_api](#input\_enable\_protected\_admin\_api) | Enables the ADMIN API for use by e.g. Kong provider | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment variables for Kong app | `map(any)` | `{}` | no |
+| <a name="input_hostnames"></a> [hostnames](#input\_hostnames) | The list of hostnames to use for the gateway | `list(string)` | `[]` | no |
 | <a name="input_kong_declarative_config_string"></a> [kong\_declarative\_config\_string](#input\_kong\_declarative\_config\_string) | Declarative configuration json for Kong. To be provided while running in db less declarative mode | `string` | `"{\"_format_version\":\"1.1\", \"services\":[{\"host\":\"go-hello-world.eu-west.philips-healthsuite.com\",\"port\":443,\"protocol\":\"https\", \"routes\":[{\"paths\":[\"/\"]}]}],\"plugins\":[{\"name\":\"prometheus\"}]}"` | no |
 | <a name="input_kong_image"></a> [kong\_image](#input\_kong\_image) | Kong Docker image to use | `string` | `"kong/kong:2.6.0"` | no |
 | <a name="input_kong_nginx_worker_processes"></a> [kong\_nginx\_worker\_processes](#input\_kong\_nginx\_worker\_processes) | Number of worker processes to use. When increase this, also increase memory allocation | `number` | `4` | no |
 | <a name="input_kong_plugins"></a> [kong\_plugins](#input\_kong\_plugins) | List of plugins to load | `list(string)` | <pre>[<br>  "bundled"<br>]</pre> | no |
-| <a name="input_konga_environment"></a> [konga\_environment](#input\_konga\_environment) | Environment variables for Kong app | `map(any)` | `{}` | no |
-| <a name="input_konga_image"></a> [konga\_image](#input\_konga\_image) | Konga dashboard image to use | `string` | `"pantsel/konga"` | no |
 | <a name="input_memory"></a> [memory](#input\_memory) | The amount of RAM to allocate for Kong (MB) | `number` | `1024` | no |
 | <a name="input_name_postfix"></a> [name\_postfix](#input\_name\_postfix) | The postfix string to append to the hostname, prevents namespace clashes | `string` | `""` | no |
 | <a name="input_network_policies"></a> [network\_policies](#input\_network\_policies) | The container-to-container network policies to create with Kong as the source app | <pre>list(object({<br>    destination_app = string<br>    protocol        = string<br>    port            = string<br>  }))</pre> | `[]` | no |
@@ -93,7 +88,7 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 | <a name="output_kong_api_password"></a> [kong\_api\_password](#output\_kong\_api\_password) | The API password |
 | <a name="output_kong_api_username"></a> [kong\_api\_username](#output\_kong\_api\_username) | The API username |
 | <a name="output_kong_app_id"></a> [kong\_app\_id](#output\_kong\_app\_id) | The Kong app id |
-| <a name="output_kong_endpoint"></a> [kong\_endpoint](#output\_kong\_endpoint) | The endpoint where Kong is reachable on |
+| <a name="output_kong_endpoints"></a> [kong\_endpoints](#output\_kong\_endpoints) | The endpoint where Kong is reachable on |
 
 <!--- END_TF_DOCS --->
 
