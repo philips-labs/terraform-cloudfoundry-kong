@@ -4,12 +4,6 @@ variable "kong_image" {
   default     = "kong/kong:2.6.0"
 }
 
-variable "konga_image" {
-  type        = string
-  description = "Konga dashboard image to use"
-  default     = "pantsel/konga"
-}
-
 variable "kong_plugins" {
   type        = list(string)
   description = "List of plugins to load"
@@ -28,6 +22,12 @@ variable "cf_domain_name" {
   type        = string
   description = "The CF domain to use for Kong"
   default     = ""
+}
+
+variable "hostnames" {
+  type        = list(string)
+  description = "The list of hostnames to use for the gateway"
+  default     = []
 }
 
 variable "name_postfix" {
@@ -53,13 +53,6 @@ variable "kong_nginx_worker_processes" {
   description = "Number of worker processes to use. When increase this, also increase memory allocation"
   default     = 4
 }
-
-variable "konga_environment" {
-  type        = map(any)
-  description = "Environment variables for Kong app"
-  default     = {}
-}
-
 
 variable "network_policies" {
   description = "The container-to-container network policies to create with Kong as the source app"
@@ -98,12 +91,6 @@ variable "db_json_params" {
 variable "enable_postgres" {
   type        = bool
   description = "Enable or disables postgres persistence"
-  default     = false
-}
-
-variable "enable_konga" {
-  type        = bool
-  description = "Enable or disables Konga dashboard"
   default     = false
 }
 

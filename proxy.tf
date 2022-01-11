@@ -59,7 +59,7 @@ resource "local_file" "nginx_htpasswd" {
   count    = var.enable_protected_admin_api ? 1 : 0
   filename = "${path.module}/nginx-reverse-proxy/.htpasswd"
   content  = <<EOF
-${random_id.id.hex}:${htpasswd_password.hash[count.index].apr1}
+${random_pet.deploy.id}:${htpasswd_password.hash[count.index].apr1}
 EOF
 }
 

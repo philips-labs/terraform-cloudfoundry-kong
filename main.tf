@@ -1,10 +1,10 @@
 locals {
-  postfix = var.name_postfix != "" ? var.name_postfix : random_id.id.hex
-  domain  = var.cf_domain_name == "" ? data.hsdp_config.cf[0].domain : var.cf_domain_name
+  postfix   = var.name_postfix != "" ? var.name_postfix : random_pet.deploy.id
+  domain    = var.cf_domain_name == "" ? data.hsdp_config.cf[0].domain : var.cf_domain_name
+  hostnames = length(var.hostnames) == 0 ? ["kong-${random_pet.deploy.id}"] : var.hostnames
 }
 
-resource "random_id" "id" {
-  byte_length = 4
+resource "random_pet" "deploy" {
 }
 
 data "hsdp_config" "cf" {
@@ -64,9 +64,16 @@ resource "cloudfoundry_app" "kong" {
     KONG_DECLARATIVE_CONFIG_STRING = var.kong_declarative_config_string
   }, var.environment)
 
-  routes {
-    route = cloudfoundry_route.kong.id
+
+  dynamic "routes" {
+    for_each = toset(local.hostnames)
+
+    content {
+      route = cloudfoundry_route.kong[routes.value].id
+    }
   }
+
+
   routes {
     route = cloudfoundry_route.kong_internal.id
   }
@@ -94,29 +101,6 @@ resource "cloudfoundry_app" "kong" {
   }
 }
 
-resource "cloudfoundry_app" "konga" {
-  count        = var.enable_konga ? 1 : 0
-  name         = "tf-konga-${local.postfix}"
-  space        = data.cloudfoundry_space.space.id
-  memory       = var.memory
-  disk_quota   = var.disk
-  docker_image = var.konga_image
-  docker_credentials = {
-    username = var.docker_username
-    password = var.docker_password
-  }
-  environment = merge(var.konga_environment,
-    {
-      "NO_AUTH"  = "true"
-      "NODE_ENV" = "production"
-    }
-  )
-
-  routes {
-    route = cloudfoundry_route.konga_internal[0].id
-  }
-}
-
 module "postgres" {
   count       = var.enable_postgres ? 1 : 0
   source      = "philips-labs/postgres-service/hsdp"
@@ -126,33 +110,17 @@ module "postgres" {
 }
 
 resource "cloudfoundry_route" "kong" {
+  for_each = toset(local.hostnames)
+
   domain   = data.cloudfoundry_domain.domain.id
   space    = data.cloudfoundry_space.space.id
-  hostname = "tf-kong-${local.postfix}"
+  hostname = each.value
 }
 
 resource "cloudfoundry_route" "kong_internal" {
   domain   = data.cloudfoundry_domain.internal_domain.id
   space    = data.cloudfoundry_space.space.id
   hostname = "tf-kong-${local.postfix}"
-}
-
-resource "cloudfoundry_route" "konga_internal" {
-  count    = var.enable_konga ? 1 : 0
-  domain   = data.cloudfoundry_domain.internal_domain.id
-  space    = data.cloudfoundry_space.space.id
-  hostname = "tf-konga-${local.postfix}"
-}
-
-resource "cloudfoundry_network_policy" "konga_internal" {
-  count = var.enable_konga ? 1 : 0
-
-  policy {
-    source_app      = cloudfoundry_app.konga[0].id
-    destination_app = cloudfoundry_app.kong.id_bg
-    protocol        = "tcp"
-    port            = "8001"
-  }
 }
 
 resource "cloudfoundry_network_policy" "kong" {

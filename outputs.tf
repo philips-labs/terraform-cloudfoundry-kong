@@ -1,6 +1,6 @@
-output "kong_endpoint" {
+output "kong_endpoints" {
   description = "The endpoint where Kong is reachable on"
-  value       = cloudfoundry_route.kong.endpoint
+  value       = [for k, v in cloudfoundry_route.kong : v.endpoint]
 }
 
 output "kong_api_endpoint" {
@@ -10,7 +10,7 @@ output "kong_api_endpoint" {
 
 output "kong_api_username" {
   description = "The API username"
-  value       = random_id.id.hex
+  value       = random_pet.deploy.id
 }
 
 output "kong_api_password" {
