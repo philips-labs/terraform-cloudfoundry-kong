@@ -1,3 +1,3 @@
-output "kong_endpoint" {
-  value = "https://${module.kong.kong_endpoint}"
+output "kong_endpoints" {
+  value = module.kong.kong_endpoints
 }
