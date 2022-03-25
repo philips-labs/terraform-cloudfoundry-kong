@@ -87,9 +87,9 @@ resource "cloudfoundry_app" "kong" {
     "prometheus.exporter.port"          = "8001"
     "prometheus.exporter.path"          = "/metrics"
     "prometheus.rules.json" = jsonencode([{
-      name = "KongDataStoreReachable"
-      expr = "kong_datastore_reachable < 1"
-      for  = "5m"
+      alert = "KongDataStoreReachable"
+      expr  = "kong_datastore_reachable < 1"
+      for   = "5m"
       labels = {
         severity = "critical"
       }
