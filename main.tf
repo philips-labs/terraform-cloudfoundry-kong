@@ -87,7 +87,7 @@ resource "cloudfoundry_app" "kong" {
     "variant.autoscaler.json" = jsonencode([{
       min   = 2
       max   = 5
-      query = "avg(avg_over_time(cpu{guid=\"{{ guid }}\"}[1m]))"
+      query = "avg(avg_over_time(cpu{guid=\"{{ guid }}\"}[{{ window }}]))"
       expr  = "query_result > 80"
     }])
     "prometheus.exporter.instance_name" = "${data.cloudfoundry_org.org.name}.${data.cloudfoundry_space.space.name}.kong-${local.postfix}-$${1}"
