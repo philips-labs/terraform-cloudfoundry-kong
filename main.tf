@@ -79,10 +79,17 @@ resource "cloudfoundry_app" "kong" {
   }
 
   labels = {
-    "variant.tva/exporter" = true
-    "variant.tva/rules"    = true
+    "variant.tva/exporter"   = true
+    "variant.tva/rules"      = true
+    "variant.tva/autoscaler" = true
   }
   annotations = {
+    "variant.autoscaler.json" = jsonencode([{
+      min   = 2
+      max   = 5
+      query = "avg(avg_over_time(cpu{guid=\"{{ guid }}\"}[1m]))"
+      expr  = "query_result > 80"
+    }])
     "prometheus.exporter.instance_name" = "${data.cloudfoundry_org.org.name}.${data.cloudfoundry_space.space.name}.kong-${local.postfix}-$${1}"
     "prometheus.exporter.port"          = "8001"
     "prometheus.exporter.path"          = "/metrics"
