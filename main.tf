@@ -111,7 +111,7 @@ resource "cloudfoundry_app" "kong" {
 module "postgres" {
   count       = var.enable_postgres ? 1 : 0
   source      = "philips-labs/postgres-service/hsdp"
-  version     = "0.0.3"
+  version     = "0.1.0"
   cf_space_id = data.cloudfoundry_space.space.id
   plan        = var.db_plan
 }
