@@ -30,7 +30,7 @@ The module is [published here](https://registry.terraform.io/modules/philips-lab
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_postgres"></a> [postgres](#module\_postgres) | philips-labs/postgres-service/hsdp | 0.1.0 |
+| <a name="module_postgres"></a> [postgres](#module\_postgres) | philips-labs/postgres-service/hsdp | 0.2.0 |
 
 ## Resources
 
