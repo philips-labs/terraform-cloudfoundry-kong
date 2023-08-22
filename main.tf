@@ -66,10 +66,12 @@ resource "cloudfoundry_app" "kong" {
 
 
   dynamic "routes" {
-    for_each = toset(local.hostnames)
+    for_each = {
+      for i, h in local.hostnames : "${i}" => h
+    }
 
     content {
-      route = cloudfoundry_route.kong[routes.value].id
+      route = cloudfoundry_route.kong[routes.key].id
     }
   }
 
@@ -112,7 +114,9 @@ module "postgres" {
 }
 
 resource "cloudfoundry_route" "kong" {
-  for_each = toset(local.hostnames)
+  for_each = {
+    for i, h in local.hostnames : "${i}" => h
+  }
 
   domain   = data.cloudfoundry_domain.domain.id
   space    = data.cloudfoundry_space.space.id
