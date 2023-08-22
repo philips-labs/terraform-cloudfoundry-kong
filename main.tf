@@ -66,10 +66,12 @@ resource "cloudfoundry_app" "kong" {
 
 
   dynamic "routes" {
-    for_each = toset(local.hostnames)
+    for_each = {
+      for i, h in local.hostnames : "${i}" => h
+    }
 
     content {
-      route = cloudfoundry_route.kong[routes.value].id
+      route = cloudfoundry_route.kong[routes.key].id
     }
   }
 
@@ -81,15 +83,10 @@ resource "cloudfoundry_app" "kong" {
   labels = {
     "variant.tva/exporter"   = true
     "variant.tva/rules"      = true
-    "variant.tva/autoscaler" = true
+    "variant.tva/autoscaler" = length(var.kong_autoscaler_config) > 0
   }
   annotations = {
-    "variant.autoscaler.json" = jsonencode([{
-      min   = 2
-      max   = 5
-      query = "avg(avg_over_time(cpu{guid=\"{{ guid }}\"}[{{ window }}]))"
-      expr  = "query_result > 80"
-    }])
+    "variant.autoscaler.json"           = jsonencode(var.kong_autoscaler_config)
     "prometheus.exporter.instance_name" = "${data.cloudfoundry_org.org.name}.${data.cloudfoundry_space.space.name}.kong-${local.postfix}-$${1}"
     "prometheus.exporter.port"          = "8001"
     "prometheus.exporter.path"          = "/metrics"
@@ -117,7 +114,9 @@ module "postgres" {
 }
 
 resource "cloudfoundry_route" "kong" {
-  for_each = toset(local.hostnames)
+  for_each = {
+    for i, h in local.hostnames : "${i}" => h
+  }
 
   domain   = data.cloudfoundry_domain.domain.id
   space    = data.cloudfoundry_space.space.id

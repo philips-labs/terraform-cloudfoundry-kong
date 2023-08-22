@@ -54,6 +54,22 @@ variable "kong_nginx_worker_processes" {
   default     = 4
 }
 
+variable "kong_autoscaler_config" {
+  type = list(object({
+    min   = number
+    max   = number
+    query = string
+    expr  = string
+  }))
+  description = "The Variant autoscaling configuration for Kong"
+  default = [{
+    min   = 2
+    max   = 5
+    query = "avg(avg_over_time(cpu{guid=\"{{ guid }}\"}[{{ window }}]))"
+    expr  = "query_result > 80"
+  }]
+}
+
 variable "network_policies" {
   description = "The container-to-container network policies to create with Kong as the source app"
   type = list(object({
