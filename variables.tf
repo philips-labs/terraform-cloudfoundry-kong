@@ -27,6 +27,7 @@ variable "cf_domain_name" {
 variable "hostnames" {
   type        = list(string)
   description = "The list of hostnames to use for the gateway"
+  default     = []
 }
 
 variable "name_postfix" {
